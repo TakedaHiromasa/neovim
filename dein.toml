@@ -1,0 +1,176 @@
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+# LSP ===========================================
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
+depends = 'context_filetype.vim'
+hook_add = '''
+" deoplete options
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_smart_case = 1
+let g:deoplete#auto_complete_delay = 5
+"let g:deoplete#auto_complete_start_length = 1
+"let g:deoplete#enable_camel_case = 0
+let g:deoplete#ignore_case = 0
+let g:deoplete#refresh_always = 0
+let g:deoplete#file#enable_buffer_path = 1
+let g:deoplete_max_list = 10000
+
+" color
+highlight Pmenu ctermfg=7 ctermbg=235
+highlight PmenuSel ctermfg=7 ctermbg=8
+highlight PmenuSbar ctermbg=7
+'''
+on_i = 1
+
+[[plugins]]
+repo = 'SirVer/ultisnips'
+hook_add = '''
+let g:UltiSnipsSnippetDirectories=[$HOME . "/.config/nvim/ultisnips.snippets.d"]
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+'''
+
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+depends = ['context_filetype.vim','neosnippet-snippets']
+# on_event = 'InsertCharPre'
+on_ft = 'snippet'
+hook_add = '''
+	"imap <C-k> <Plug>(neosnippet_expand_or_jump)
+	"smap <C-k> <Plug>(neosnippet_expand_or_jump)
+	"xmap <C-k> <Plug>(neosnippet_expand_target)
+
+	" エンターキーで補完候補の確定. スニペットの展開もエンターキーで確定
+	imap <expr><CR> neosnippet#expandable() ? "<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "<C-y>" : "<CR>"
+	" タブキーで補完候補の選択. スニペット内のジャンプもタブキーでジャンプ
+	imap <expr><TAB> pumvisible() ? "<C-n>" : neosnippet#jumpable() ? "<Plug>(neosnippet_expand_or_jump)" : "<TAB>"
+
+	if has('conceal')
+		set conceallevel=2 concealcursor=niv
+	endif
+'''
+
+[[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+" Disable completion where available from ALE
+" (not worth creating a separate file just for a one-liner)
+let g:ale_completion_enabled = 1
+
+" Only run linters named in ale_linters settings.
+let g:ale_linters_explicit = 1
+
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+let g:ale_open_list = 1
+let g:ale_keep_list_window_open = 1
+
+let g:ale_sign_warning = '--'
+
+let g:ale_rust_rls_config = {
+  \ 'rust': {
+  \   'clippy_preference': 'on'
+  \   }
+  \ }
+'''
+
+[[plugins]]
+repo = 'autozimu/LanguageClient-neovim'
+rev = 'next'
+depends = ['deoplete.nvim']
+build = 'bash install.sh'
+hook_add = '''
+	set hidden
+	let g:LanguageClient_autoStart = 1
+	let g:LanguageClient_serverCommands = {
+        \ 'c': ['clangd'],
+        \ 'cpp': ['clangd'],
+    \ }
+	let g:LanguageClient_loadSettings = 1
+	let g:LanguageClient_hasSnippetSupport = 0
+
+	set completefunc=LanguageClient#complete
+
+	nnoremap K :call LanguageClient#textDocument_hover()<CR>
+	nnoremap F :call LanguageClient#textDocument_formatting()<CR>
+'''
+
+[[plugins]]
+repo = 'junegunn/fzf'
+
+# NERDTree ======================================
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+hook_add = '''
+	set guifont=RictyDiscordForPowerline\ Nerd\ Font:h14
+'''
+
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+hook_add = '''
+	noremap <C-n> :NERDTreeToggle<CR>
+'''
+
+[[plugins]]
+repo = 'jistr/vim-nerdtree-tabs'
+
+[[plugins]]
+repo = 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+# Window Control ================================
+[[plugins]]
+repo = 'kana/vim-submode'
+hook_add = '''
+call submode#enter_with('bufmove', 'n', '', 's>', '<C-w>>')
+call submode#enter_with('bufmove', 'n', '', 's<', '<C-w><')
+call submode#enter_with('bufmove', 'n', '', 's+', '<C-w>+')
+call submode#enter_with('bufmove', 'n', '', 's-', '<C-w>-')
+call submode#map('bufmove', 'n', '', '>', '<C-w>>')
+call submode#map('bufmove', 'n', '', '<', '<C-w><')
+call submode#map('bufmove', 'n', '', '+', '<C-w>+')
+call submode#map('bufmove', 'n', '', '-', '<C-w>-')
+'''
+
+[[plugins]]
+repo = 'Shougo/unite.vim'
+hook_add = '''
+	nnoremap sT :<C-u>Unite tab<CR>
+	nnoremap sb :<C-u>Unite buffer_tab -buffer-name=file<CR>
+	nnoremap sB :<C-u>Unite buffer -buffer-name=file<CR>
+'''
+
+# Comment toggle ================================
+[[plugins]]
+repo = 'tyru/caw.vim'
+hook_add = '''
+	nmap , <Plug>(caw:zeropos:toggle)
+	vmap , <Plug>(caw:zeropos:toggle)
+'''
+
+# Option Bar ====================================
+[[plugins]]
+repo = 'vim-airline/vim-airline'
+hook_add = '''
+	set showtabline=2 " 常にタブラインを表示
+	let g:airline#extensions#tabline#enabled = 1
+	let g:airline#extensions#tabline#tab_nr_type = 1
+	let g:airline_powerline_fonts = 2
+	set laststatus=2
+'''
+
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+
+
