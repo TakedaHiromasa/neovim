@@ -29,16 +29,29 @@ let g:python_host_prog=$PYENV_ROOT.'/versions/neovim-2/bin/python'
 let g:python3_host_prog=$PYENV_ROOT.'/versions/neovim-3/bin/python'
 
 " dein Scripts =============================
+" deinがインストールされるディレクトリの指定
+let s:dein_dir = expand('~/.cache/dein') "<- dein によってプラグインがインストールされるディレクトリ ##########
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+
+" deinがインストールされているかをチェック インストールされていなかったらdeinをダウンロードしてくる
+if &runtimepath !~# '/dein.vim'
+ if !isdirectory(s:dein_repo_dir)
+ execute '!git clone https://github.com/Shougo/dein.vim.git' s:dein_repo_dir
+ endif
+ execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+endif
+
+
 if &compatible
   set nocompatible               " Be iMproved
 endif
 
 " Required:
-set runtimepath+=/home/hiro/.cache/dein/repos/github.com/Shougo/dein.vim
+set runtimepath+='~/.cache/dein/repos/github.com/Shougo/dein.vim'
 
 " Required:
-if dein#load_state('/home/hiro/.cache/dein')
-  call dein#begin('/home/hiro/.cache/dein')
+if dein#load_state('~/.cache/dein')
+  call dein#begin('~/.cache/dein')
   call dein#load_toml('~/.config/nvim/dein.toml', {'lazy': 0})
   call dein#load_toml('~/.config/nvim/dein_lazy.toml', {'lazy': 1})
 
